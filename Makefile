@@ -55,6 +55,7 @@ VERSION ?= $(shell \
 	if [ -n "$(GITHUB_REF_NAME)" ]; then echo "${GITHUB_REF_NAME}"; \
 	else git describe --tags --always || echo "v0.0.0-SNAPSHOT"; \
 	fi)
+COMMIT ?= $(shell git rev-parse HEAD)
 
 .EXPORT_ALL_VARIABLES:
 
@@ -69,7 +70,7 @@ VERSION ?= $(shell \
 $(BIN): installer-tarball
 	@echo "# Building '$(BIN)'"
 	@[ -d $(BIN_DIR) ] || mkdir -p $(BIN_DIR)
-	go build -ldflags "-X github.com/redhat-appstudio/tssc-cli/pkg/constants.Version=$(VERSION)" -o $(BIN) $(CMD)
+	go build -ldflags "-X github.com/redhat-appstudio/tssc-cli/pkg/constants.Version=$(VERSION) -X github.com/redhat-appstudio/tssc-cli/pkg/constants.Commit=$(COMMIT)" -o $(BIN) $(CMD)
 
 .PHONY: build
 build: $(BIN)
